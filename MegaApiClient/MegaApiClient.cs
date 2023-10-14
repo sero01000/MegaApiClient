@@ -149,6 +149,71 @@
       }
     }
 
+    // Easy hash generate V2
+    public AuthInfos GenerateAuthInfosV2(string email, string password, string mfaKey = null, string version, string salt)
+    {
+      if (string.IsNullOrEmpty(email))
+      {
+        throw new ArgumentNullException("email");
+      }
+
+      if (string.IsNullOrEmpty(password))
+      {
+        throw new ArgumentNullException("password");
+      }
+
+      if (version == "2" && !string.IsNullOrEmpty(salt))
+      {
+        // Mega uses a new way to hash password based on a salt sent by Mega during prelogin
+        var saltBytes = salt.FromBase64();
+        var passwordBytes = password.ToBytesPassword();
+        const int Iterations = 100000;
+
+        var derivedKeyBytes = new byte[32];
+        using (var hmac = new HMACSHA512())
+        {
+          var pbkdf2 = new Pbkdf2(hmac, passwordBytes, saltBytes, Iterations);
+          derivedKeyBytes = pbkdf2.GetBytes(derivedKeyBytes.Length);
+        }
+
+        // Derived key contains master key (0-16) and password hash (16-32)
+        if (!string.IsNullOrEmpty(mfaKey))
+        {
+          return new AuthInfos(
+            email,
+            derivedKeyBytes.Skip(16).ToArray().ToBase64(),
+            derivedKeyBytes.Take(16).ToArray(),
+            mfaKey);
+        }
+
+        return new AuthInfos(
+          email,
+          derivedKeyBytes.Skip(16).ToArray().ToBase64(),
+          derivedKeyBytes.Take(16).ToArray());
+      }
+      else if (version == "1")
+      {
+        // Retrieve password as UTF8 byte array
+        var passwordBytes = password.ToBytesPassword();
+
+        // Encrypt password to use password as key for the hash
+        var passwordAesKey = PrepareKey(passwordBytes);
+
+        // Hash email and password to decrypt master key on Mega servers
+        var hash = GenerateHash(email.ToLowerInvariant(), passwordAesKey);
+        if (!string.IsNullOrEmpty(mfaKey))
+        {
+          return new AuthInfos(email, hash, passwordAesKey, mfaKey);
+        }
+
+        return new AuthInfos(email, hash, passwordAesKey);
+      }
+      else
+      {
+        throw new NotSupportedException("Version of account not supported");
+      }
+    }
+
     public event EventHandler<ApiRequestFailedEventArgs> ApiRequestFailed;
 
     public bool IsLoggedIn => _sessionId != null;
