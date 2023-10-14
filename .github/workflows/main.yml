@@ -97,21 +97,21 @@ jobs:
   #         path: ./docs/_site/
   #         if-no-files-found: error
 
-  deploy:
-    name: Deploy 🚀
-    needs: [ build ]
-    runs-on: windows-latest
-    steps:
-      - name: Download NuGet packages
-        uses: actions/download-artifact@v3
-        with:
-          name: NuGet packages
-          path: ./artifacts/
+  # deploy:
+  #   name: Deploy 🚀
+  #   needs: [ build ]
+  #   runs-on: windows-latest
+  #   steps:
+  #     - name: Download NuGet packages
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: NuGet packages
+  #         path: ./artifacts/
 
-      - name: Publish on MyGet
-        run: |
-          cd ./artifacts/
-          dotnet nuget push *.nupkg --source https://www.myget.org/F/megaapiclient/api/v3/index.json --api-key ${{ secrets.MYGET_SECRET }}
+  #     - name: Publish on MyGet
+  #       run: |
+  #         cd ./artifacts/
+  #         dotnet nuget push *.nupkg --source https://www.myget.org/F/megaapiclient/api/v3/index.json --api-key ${{ secrets.MYGET_SECRET }}
 
   deploy-release:
     name: Deploy release 🚀🌐
