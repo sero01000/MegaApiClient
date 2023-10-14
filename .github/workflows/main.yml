@@ -1,7 +1,8 @@
 name: MegaApiClient CI
 
 on:
-  push:
+  release:
+    types: [created]
     branches:
       - master
     tags:
