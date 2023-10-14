@@ -150,7 +150,7 @@
     }
 
     // Easy hash generate V2
-    public AuthInfos GenerateAuthInfosV2(string email, string password, string mfaKey = null, string version, string salt)
+    public AuthInfos GenerateAuthInfosV2(string email, string password, string version, string salt, string mfaKey = null)
     {
       if (string.IsNullOrEmpty(email))
       {
