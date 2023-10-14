@@ -4,9 +4,9 @@
   using System.Linq;
   using System.Text;
 
-  internal static class Extensions
+  public static class Extensions
   {
-    private static readonly DateTime s_epochStart = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+    public static readonly DateTime s_epochStart = new DateTime(1970, 1, 1, 0, 0, 0, 0);
 
     public static string ToBase64(this byte[] data)
     {
