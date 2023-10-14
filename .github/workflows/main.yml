@@ -128,17 +128,17 @@ jobs:
           name: NuGet packages
           path: ./artifacts/
 
-      - name: Download Documentation
-        uses: actions/download-artifact@v2
-        with:
-          name: Documentation
-          path: ./docs/_site/
+      # - name: Download Documentation
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: Documentation
+      #     path: ./docs/_site/
 
-      - name: Publish Documentation
-        uses: JamesIves/github-pages-deploy-action@4.1.0
-        with:
-          branch: gh-pages
-          folder: ./docs/_site/
+      # - name: Publish Documentation
+      #   uses: JamesIves/github-pages-deploy-action@4.1.0
+      #   with:
+      #     branch: gh-pages
+      #     folder: ./docs/_site/
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
@@ -148,7 +148,7 @@ jobs:
           files: ./artifacts/*.nupkg
           draft: true
 
-      - name: Publish on NuGet
-        run: |
-          cd ./artifacts/
-          dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_SECRET }}
+      # - name: Publish on NuGet
+      #   run: |
+      #     cd ./artifacts/
+      #     dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_SECRET }}
