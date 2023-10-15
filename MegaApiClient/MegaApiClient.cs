@@ -457,6 +457,18 @@
       return nodes.Distinct().OfType<INode>();
     }
 
+    // TODO: SharedKey parse
+    // public Node[] ParseNodesv2(string NodesSerialized, List<SharedKey> SharedKeys){
+    //   Node[] Nodes;
+    //   Node[] UnsupportedNodes;
+
+    //   var tempNodes = JsonConvert.DeserializeObject<Node[]>(NodesSerialized, new NodeConverter(_masterKey, ref SharedKeys));
+
+    //   UnsupportedNodes = tempNodes.Where(x => x.EmptyKey).ToArray();
+    //   Nodes = tempNodes.Where(x => !x.EmptyKey).ToArray();
+    //   return Nodes;
+    // }
+
     /// <summary>
     /// Retrieve children nodes of a parent node
     /// </summary>
