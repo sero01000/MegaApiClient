@@ -11,12 +11,12 @@
   using Serialization;
 
   [DebuggerDisplay("Node - Type: {Type} - Name: {Name} - Id: {Id}")]
-  internal class Node : INode, INodeCrypto
+  public class Node : INode, INodeCrypto
   {
-    private static readonly Regex s_fileAttributeRegex = new Regex(@"(?<id>\d+):(?<type>\d+)\*(?<handle>[a-zA-Z0-9-_]+)");
+    public static readonly Regex s_fileAttributeRegex = new Regex(@"(?<id>\d+):(?<type>\d+)\*(?<handle>[a-zA-Z0-9-_]+)");
 
-    private byte[] _masterKey;
-    private readonly List<SharedKey> _sharedKeys;
+    public byte[] _masterKey;
+    public readonly List<SharedKey> _sharedKeys;
 
     public Node(byte[] masterKey, ref List<SharedKey> sharedKeys)
     {
