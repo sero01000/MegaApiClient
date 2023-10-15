@@ -92,7 +92,7 @@
   }
 
   [DebuggerDisplay("Id: {Id} / Key: {Key}")]
-  internal class SharedKey
+  public class SharedKey
   {
     public SharedKey(string id, string key)
     {
