@@ -293,6 +293,26 @@
       return new LogonSessionToken(_sessionId, _masterKey);
     }
 
+    public LogonSessionToken GetSessionToken(string MasterKey, string PrivateKey, string SessionId)
+    {
+      // Decrypt master key using our password key
+      var cryptedMasterKey = MasterKey.FromBase64();
+      byte[] masterKey = Crypto.DecryptKey(cryptedMasterKey, authInfos.PasswordAesKey);
+    
+      // Decrypt RSA private key using decrypted master key
+      var cryptedRsaPrivateKey = PrivateKey.FromBase64();
+      var rsaPrivateKeyComponents = Crypto.GetRsaPrivateKeyComponents(cryptedRsaPrivateKey, masterKey);
+    
+      // Decrypt session id
+      var encryptedSid = SessionId.FromBase64();
+      var sid = Crypto.RsaDecrypt(encryptedSid.FromMPINumber(), rsaPrivateKeyComponents[0], rsaPrivateKeyComponents[1], rsaPrivateKeyComponents[2]);
+    
+      // Session id contains only the first 43 bytes
+      string sessionId = sid.Take(43).ToArray().ToBase64();
+    
+      return new LogonSessionToken(sessionId, masterKey);
+    }
+
     public void Login(LogonSessionToken logonSessionToken)
     {
       EnsureLoggedOut();
