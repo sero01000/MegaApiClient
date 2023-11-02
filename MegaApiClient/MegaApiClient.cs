@@ -152,16 +152,7 @@
     // Easy hash generate V2
     public AuthInfos GenerateAuthInfosV2(string email, string password, string version, string salt, string mfaKey = null)
     {
-      if (string.IsNullOrEmpty(email))
-      {
-        throw new ArgumentNullException("email");
-      }
-
-      if (string.IsNullOrEmpty(password))
-      {
-        throw new ArgumentNullException("password");
-      }
-
+      
       if (version == "2" && !string.IsNullOrEmpty(salt))
       {
         // Mega uses a new way to hash password based on a salt sent by Mega during prelogin
@@ -170,11 +161,13 @@
         const int Iterations = 100000;
 
         var derivedKeyBytes = new byte[32];
-        using (var hmac = new HMACSHA512())
-        {
-          var pbkdf2 = new Pbkdf2(hmac, passwordBytes, saltBytes, Iterations);
-          derivedKeyBytes = pbkdf2.GetBytes(derivedKeyBytes.Length);
-        }
+        derivedKeyBytes = Rfc2898DeriveBytes.Pbkdf2(
+            passwordBytes,
+            saltBytes,
+            Iterations,
+            HashAlgorithmName.SHA512,
+            derivedKeyBytes.Length
+        );
 
         // Derived key contains master key (0-16) and password hash (16-32)
         if (!string.IsNullOrEmpty(mfaKey))
